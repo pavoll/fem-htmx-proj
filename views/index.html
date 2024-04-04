@@ -1,16 +1,47 @@
 {{ block "index" . }}
-<!Doctype html>
+<!DOCTYPE html>
 <html lang="en">
     <head>
         <title>Index</title>
-        <meta charset="UTF-8">
+        <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link href="css\index.css" rel="stylesheet">
-        <script src="https://unpkg.com/htmx.org/dist/htmx.js"></script>
+        <script src="https://unpkg.com/htmx.org@1.9.11"></script>
     </head>
     <body>
-        Count {{ .Count }}
-        <button hx-target="body" hx-post="/count">Count</button>
-    </body>
+        {{ template "form" .Form }}
+        <hr/>
+        {{ template "contacts" .Data }}
+   </body>
 </html>
+{{ end }}
+
+{{ block "form" . }}
+<form hx-swap="outerHTML" hx-post="/contacts"> 
+    name: <input {{ if .Values.name }} value="{{ .Values.name }}" {{ end }}
+        type="text" name="name"/>
+    email: <input {{ if .Values.email }} value="{{ .Values.email }}" {{ end }}
+        type="text" name="email"/>
+
+    {{ if .Errors }}
+        <ul>
+            {{ range .Errors }}
+                <li>{{ . }}</li>
+            {{ end }}
+        </ul>
+    {{ end }}
+
+    <button type="submit">Submit</button>
+</form>
+{{ end }}
+
+
+{{ block "contacts" . }}
+    <div id="contacts" style="display: flex; flex-direction: column">
+    {{ range .Contacts }}
+        <div>
+            Name: <span>{{ .Name }}</span> 
+            Email: <span>{{ .Email }} </span>
+        </div>
+    {{ end }}
+    </div>
 {{ end }}
